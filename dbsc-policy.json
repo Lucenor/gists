@@ -1,0 +1,11 @@
+{
+  "policy_name": "Enforce_DBSC_Strict",
+  "conditions": {
+    "client_types": ["browser", "thick_client"],
+    "device_bound_credential_present": true
+  },
+  "actions": {
+    "on_cryptographic_mismatch": "revoke_session_immediately",
+    "log_level": "critical"
+  }
+}
