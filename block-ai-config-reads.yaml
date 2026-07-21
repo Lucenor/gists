@@ -1,0 +1,28 @@
+# Purpose: Block unauthorized reads of AI-workspace config files (API keys, MCP creds).
+# Failure mode: fails OPEN if the eBPF program fails to attach — verify attachment on boot.
+# Note: Sigkill is aggressive. Start in audit (Post) mode and profile before enforcing.
+# Matching: Tetragon's Prefix/Postfix operators are LITERAL (no globbing). The home dir
+#   varies per user, so match the trailing config path with Postfix — a "/home/*/..."
+#   Prefix would be taken literally and never fire.
+apiVersion: cilium.io/v1alpha1
+kind: TracingPolicy
+metadata:
+  name: block-ai-config-reads
+spec:
+  kprobes:
+  - call: "sys_openat"
+    syscall: true
+    args:
+    - index: 1
+      type: "string"
+    selectors:
+    - matchArgs:
+      - index: 1
+        operator: "Postfix"
+        values:
+        - ".cursor/config.json"
+        - ".cursor/mcp.json"
+        - ".claude.json"
+        - ".claude/settings.json"
+      matchActions:
+      - action: Sigkill
